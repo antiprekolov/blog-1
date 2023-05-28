@@ -5,7 +5,11 @@
     <title>home</title>
 </head>
 <body>
-    <h1>hello world<h1>
+    <h1>посты<>
+    {% for post in posts %}
+        {{ post.title }}
+        {{ post.body }}
+    {% endfor %}
     <a href="{% url 'about' %}">Главная</a>
 </body>
 </html>
