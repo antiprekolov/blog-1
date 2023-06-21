@@ -1,8 +1,26 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+# from .views import home, second_view, post_detail, post_create
+from .views import PostList, PostDetail, PostCreate, PostUpdate, APIPostsViewSet
 
-from .views import home, second_view
+
+router = DefaultRouter()
+router.register('posts', APIPostsViewSet)
+
 
 urlpatterns = [
-    path('', home, name='home'),
-    path('second/', second_view, name='about'),
+    path('post/create/', PostCreate.as_view, name='post_create'),
+    path('post/<int:pk>', PostUpdate.as_view, name='post_update'),
+    path('post/<int:pk>/', PostDetail.as_view, name='post_detail'),
+    path('', PostList.as_view, name='home'),
+    # path('api/posts/<int:pk>', api_detail_posts, name='api_detail_posts'),
+    # path('api/posts/', APIPosts.as_view(), name='api_posts'),
+    # path('api/posts/<int:pk>', APIDetailPosts.as_view(), name='api_detail_posts'),
+    path('api/', include(router.urls)),
 ]
+
+
+
+
+
+

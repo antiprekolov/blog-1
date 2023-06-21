@@ -38,12 +38,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main',                                                        
+    'main.apps.MainConfig',
+    'account.apps.AccountConfig',
+    'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -56,7 +60,7 @@ ROOT_URLCONF = 'blog.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [Path(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -70,6 +74,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'blog.wsgi.application'
+
 
 
 # Database
@@ -102,12 +107,77 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+LOGGING = {
+    'version': 1,
+    'disable_exiting_loggers': True,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue'
+        }
+    },
+    'formatters': {
+        'simple': {
+            'format': '[%(asctime)s] % (levelname)s: %(massage)s',
+            'datefmt': '%Y.%m.%d %H:%M:%S'
+        }
+    },
+    'handlers': {
+        'console_dev': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+            'filters': ['require_debug_true']
+        },
+        'console_prod':{
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+            'level': 'INFD',
+            'filters': ['require_debug_false']
+        },
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'django-blog.log',
+            'formatter': 'simple',
+        },
+        'email': {
+            'class': 'logging.handlers.SMTPHandler',
+            'mailhost': EMAIL_HOST,
+            'fromaddr': 'адрес отправителя',
+            'toaddrs': ['спимсок адресов получателей'],
+            'subjects': 'проблемвас сайтом. Уровень CRITICAL',
+            'credentials': ('smtp_username, smtp_password')
+        }
+    },
+    'loggers':{
+        'django': {
+            'handlers': ['console_dev', 'console_prod']
+        },
+        'django.server': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True
+        }
+    }
+}
+
+LOGIN_REDIRECT_URL = '/blog/'
+LOGOUT_REDIRECT_URL = '/blog/'
+LOGIN_URL = '/account/login'
+
+# AUTHENTICATION_BACKENDS = [
+#    'django/contrib.auth.backends.ModelBackend',
+# ]
+
+AUTH_USER_MODEL = 'account,CustomUser'
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Almaty'
 
 USE_I18N = True
 

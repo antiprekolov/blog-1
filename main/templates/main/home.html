@@ -1,15 +1,23 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>home</title>
-</head>
-<body>
-    <h1>посты<>
+{% extends 'base.html' %}
+
+{% block title %}
+    main page
+{% endblock title %}
+
+
+{% block content %}
+    <p>администратор сайта: {{ admin_user.last_name }} {{ admin_user.first.name }}</p>
+    {% if user.is_authenticated %}
+    <a href="{% url 'logout' %}"></a>
+    <h3>ЗДРАВСТВУЙТЕ, {{ user.last_name }}</h3>
+        <h1>Посты</h1>
     {% for post in posts %}
-        {{ post.title }}
-        {{ post.body }}
+        <a href="{% url 'post_detail' pk=post.pk %}"><h3>{{ post.title }}</h3></a>
+        <p>{{ post.body| trancate_words:30 }}</p>
+        <p>{{ post.created_at }}</p>
     {% endfor %}
-    <a href="{% url 'about' %}">Главная</a>
-</body>
-</html>
+    {% else %}
+    <a href="{% url 'login' %}">войти</a>
+        <h1>войдите на сайт</h1>>
+    {% endif %}
+{% endblock content %}
